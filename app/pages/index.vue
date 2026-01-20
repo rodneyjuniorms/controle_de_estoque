@@ -1,30 +1,67 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+  <div class="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+    <!-- Header com Gradiente -->
+    <header class="sticky top-0 z-50 glass border-b border-gray-200/50 dark:border-slate-700/50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center justify-between h-16 sm:h-20">
+          <!-- Logo e Título -->
+          <div class="flex items-center gap-3 sm:gap-4">
+            <div class="icon-circle-primary">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
             </div>
             <div>
-              <h1 class="text-xl font-bold text-gray-900">Controle de Estoque</h1>
-              <p class="text-xs text-gray-500 hidden sm:block">Sistema de gerenciamento de produtos</p>
+              <h1 class="text-lg sm:text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                Controle de Estoque
+              </h1>
+              <p class="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
+                Sistema de gerenciamento de produtos
+              </p>
             </div>
           </div>
 
-          <div class="flex items-center gap-4">
-            <span v-if="loading" class="text-sm text-primary-600 flex items-center gap-2">
+          <!-- Lado Direito: Status + Toggle + Data -->
+          <div class="flex items-center gap-3 sm:gap-4">
+            <!-- Loading Indicator -->
+            <span v-if="loading" class="hidden sm:flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400">
               <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Sincronizando...
+              <span class="hidden md:inline">Sincronizando...</span>
             </span>
-            <span class="text-sm text-gray-500 hidden md:block">
+
+            <!-- Theme Toggle Button -->
+            <button
+              @click="toggleTheme"
+              class="relative p-2 sm:p-2.5 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-300 group"
+              :title="isDark ? 'Modo claro' : 'Modo escuro'"
+            >
+              <!-- Sol (Light Mode) -->
+              <svg
+                v-if="!isDark"
+                class="w-5 h-5 text-amber-500 group-hover:rotate-45 transition-transform duration-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <!-- Lua (Dark Mode) -->
+              <svg
+                v-else
+                class="w-5 h-5 text-indigo-400 group-hover:-rotate-12 transition-transform duration-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </button>
+
+            <!-- Data -->
+            <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden md:block">
               {{ currentDate }}
             </span>
           </div>
@@ -33,19 +70,23 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <!-- Error Alert -->
-      <div v-if="error" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-        <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-        </svg>
-        <p class="text-sm text-red-700">{{ error }}</p>
-        <button @click="error = null" class="ml-auto text-red-500 hover:text-red-700">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-          </svg>
-        </button>
-      </div>
+      <Transition name="slide">
+        <div v-if="error" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl flex items-center gap-3">
+          <div class="icon-circle-danger w-10 h-10">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <p class="flex-1 text-sm text-red-700 dark:text-red-300">{{ error }}</p>
+          <button @click="error = null" class="p-1.5 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </Transition>
 
       <!-- Stats Cards -->
       <StockStats :items="stockItems" />
@@ -65,11 +106,21 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <p class="text-center text-sm text-gray-500">
-          Controle de Estoque &copy; {{ new Date().getFullYear() }} - Desenvolvido com Nuxt 4 + Tailwind CSS + Supabase
-        </p>
+    <footer class="border-t border-gray-200 dark:border-slate-800 mt-auto bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="text-sm text-gray-500 dark:text-gray-400 text-center sm:text-left">
+            <span class="font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+              Controle de Estoque
+            </span>
+            &copy; {{ new Date().getFullYear() }}
+          </p>
+          <div class="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+            <span class="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full font-medium">Nuxt 4</span>
+            <span class="px-2 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 rounded-full font-medium">Tailwind</span>
+            <span class="px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full font-medium">Supabase</span>
+          </div>
+        </div>
       </div>
     </footer>
   </div>
@@ -82,9 +133,32 @@ const searchTerm = ref('')
 const sortBy = ref('name')
 const stockFilter = ref('all')
 
-// Carregar produtos ao montar
+// Theme toggle direto
+const isDark = ref(false)
+
+function toggleTheme() {
+  isDark.value = !isDark.value
+
+  if (isDark.value) {
+    document.documentElement.classList.add('dark')
+    localStorage.setItem('theme', 'dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+    localStorage.setItem('theme', 'light')
+  }
+}
+
 onMounted(() => {
   fetchProducts()
+
+  // Inicializar tema
+  const savedTheme = localStorage.getItem('theme')
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    isDark.value = true
+    document.documentElement.classList.add('dark')
+  }
 })
 
 const currentDate = computed(() => {
@@ -96,7 +170,6 @@ const currentDate = computed(() => {
   })
 })
 
-// Converter produtos do Supabase para formato do componente
 const stockItems = computed(() => {
   return products.value.map(p => ({
     id: p.id,
@@ -109,7 +182,6 @@ const stockItems = computed(() => {
 const filteredItems = computed(() => {
   let result = [...stockItems.value]
 
-  // Filtro de busca
   if (searchTerm.value) {
     const search = searchTerm.value.toLowerCase()
     result = result.filter(item =>
@@ -117,7 +189,6 @@ const filteredItems = computed(() => {
     )
   }
 
-  // Filtro de estoque
   switch (stockFilter.value) {
     case 'low':
       result = result.filter(item => item.qty > 0 && item.qty < 5)
@@ -130,7 +201,6 @@ const filteredItems = computed(() => {
       break
   }
 
-  // Ordenação
   result.sort((a, b) => {
     switch (sortBy.value) {
       case 'name':
@@ -171,3 +241,20 @@ async function removeStock(id: number) {
   await deleteProduct(id)
 }
 </script>
+
+<style scoped>
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>

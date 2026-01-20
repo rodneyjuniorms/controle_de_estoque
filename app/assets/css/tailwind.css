@@ -4,41 +4,191 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-slate-50 text-gray-900 antialiased transition-colors duration-300;
+  }
+
+  .dark body,
+  body.dark {
+    @apply bg-slate-900 text-gray-100;
   }
 }
 
 @layer components {
+  /* Gradientes para cards */
+  .gradient-primary {
+    @apply bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500;
+  }
+
+  .gradient-secondary {
+    @apply bg-gradient-to-br from-pink-500 via-rose-500 to-orange-400;
+  }
+
+  .gradient-accent {
+    @apply bg-gradient-to-br from-cyan-400 via-teal-500 to-emerald-500;
+  }
+
+  .gradient-success {
+    @apply bg-gradient-to-br from-emerald-400 via-green-500 to-teal-500;
+  }
+
+  .gradient-warning {
+    @apply bg-gradient-to-br from-amber-400 via-orange-500 to-red-500;
+  }
+
+  .gradient-danger {
+    @apply bg-gradient-to-br from-red-500 via-rose-500 to-pink-500;
+  }
+
+  .gradient-dark {
+    @apply bg-gradient-to-br from-slate-800 via-slate-900 to-gray-900;
+  }
+
+  /* Botões */
   .btn-primary {
-    @apply bg-primary-600 text-white px-4 py-2 rounded-lg font-medium
-           hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-5 py-2.5 rounded-xl font-semibold
+           hover:from-indigo-600 hover:to-purple-700
+           focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800
+           transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed
+           active:scale-[0.98];
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
   }
 
   .btn-danger {
-    @apply bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium
-           hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2
-           transition-all duration-200;
+    @apply bg-gradient-to-r from-red-500 to-rose-600 text-white px-4 py-2 rounded-xl text-sm font-semibold
+           hover:from-red-600 hover:to-rose-700
+           focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800
+           transition-all duration-300 active:scale-[0.98];
+  }
+
+  .btn-danger:hover {
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
   }
 
   .btn-secondary {
-    @apply bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium
-           hover:bg-gray-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2
-           transition-all duration-200;
+    @apply bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-200 px-5 py-2.5 rounded-xl font-semibold
+           border border-gray-200 dark:border-slate-700
+           hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-gray-300 dark:hover:border-slate-600
+           focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800
+           transition-all duration-300 active:scale-[0.98];
   }
 
+  /* Inputs */
   .input-field {
-    @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg
-           focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-           transition-all duration-200 placeholder:text-gray-400;
+    @apply w-full px-4 py-3 rounded-xl font-medium
+           bg-white dark:bg-slate-800
+           border-2 border-gray-200 dark:border-slate-700
+           text-gray-900 dark:text-gray-100
+           placeholder:text-gray-400 dark:placeholder:text-gray-500
+           focus:border-indigo-500 dark:focus:border-indigo-400
+           focus:ring-4 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20
+           transition-all duration-300;
   }
 
+  /* Cards */
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+    @apply bg-white dark:bg-slate-800 rounded-2xl
+           shadow-lg shadow-gray-200/50 dark:shadow-slate-900/50
+           border border-gray-100 dark:border-slate-700
+           p-6 transition-all duration-300;
   }
 
+  .card-hover {
+    @apply hover:shadow-xl hover:-translate-y-1 hover:border-gray-200 dark:hover:border-slate-600;
+  }
+
+  /* Stat Cards com gradiente */
   .stat-card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-5
-           hover:shadow-md transition-shadow duration-200;
+    @apply relative overflow-hidden rounded-2xl p-5
+           bg-white dark:bg-slate-800
+           border border-gray-100 dark:border-slate-700
+           shadow-lg shadow-gray-200/50 dark:shadow-slate-900/50
+           hover:shadow-xl hover:-translate-y-1
+           transition-all duration-300;
+  }
+
+  /* Badge de status */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide;
+  }
+
+  .badge-success {
+    @apply bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300;
+  }
+
+  .badge-warning {
+    @apply bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300;
+  }
+
+  .badge-danger {
+    @apply bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300;
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl
+           border border-white/20 dark:border-slate-700/50;
+  }
+
+  /* Ícone circular com gradiente */
+  .icon-circle {
+    @apply w-12 h-12 rounded-xl flex items-center justify-center
+           shadow-lg transition-all duration-300;
+  }
+
+  .icon-circle-primary {
+    @apply bg-gradient-to-br from-indigo-500 to-purple-600 text-white;
+    box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+  }
+
+  .icon-circle-success {
+    @apply bg-gradient-to-br from-emerald-400 to-teal-500 text-white;
+    box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+  }
+
+  .icon-circle-warning {
+    @apply bg-gradient-to-br from-amber-400 to-orange-500 text-white;
+    box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);
+  }
+
+  .icon-circle-danger {
+    @apply bg-gradient-to-br from-red-500 to-rose-600 text-white;
+    box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
+  }
+
+  .icon-circle-accent {
+    @apply bg-gradient-to-br from-cyan-400 to-blue-500 text-white;
+    box-shadow: 0 8px 16px rgba(6, 182, 212, 0.3);
+  }
+}
+
+/* Scrollbar customizada */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.gray.300') transparent;
+  }
+
+  .dark .scrollbar-thin {
+    scrollbar-color: theme('colors.slate.600') transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-slate-600 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-slate-500;
   }
 }
